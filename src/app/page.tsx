@@ -13,13 +13,13 @@ async function getData() {
   ])
 
   // Serialize dates for client components
-  const tasks = rawTasks.map((t) => ({
+  const tasks = rawTasks.map((t: typeof rawTasks[number]) => ({
     ...t,
     createdAt: t.createdAt.toISOString(),
     updatedAt: t.updatedAt.toISOString(),
   }))
 
-  const logs = rawLogs.map((l) => ({
+  const logs = rawLogs.map((l: typeof rawLogs[number]) => ({
     ...l,
     createdAt: l.createdAt.toISOString(),
   }))
