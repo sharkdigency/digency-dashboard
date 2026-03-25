@@ -1,30 +1,9 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaLibSql } from '@prisma/adapter-libsql'
-import path from 'path'
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-function createPrismaClient() {
-  // Turso (production) uses DATABASE_TURSO_DATABASE_URL + DATABASE_TURSO_AUTH_TOKEN
-  // Local dev uses file-based SQLite
-  const tursoUrl = process.env.DATABASE_TURSO_DATABASE_URL
-  const tursoToken = process.env.DATABASE_TURSO_AUTH_TOKEN
-
-  const dbUrl = tursoUrl
-    ? tursoUrl
-    : process.env.DATABASE_URL
-    ?? `file:${path.join(process.cwd(), 'prisma', 'dev.db')}`
-
-  const adapterOptions = tursoUrl && tursoToken
-    ? { url: dbUrl, authToken: tursoToken }
-    : { url: dbUrl }
-
-  const adapter = new PrismaLibSql(adapterOptions)
-  return new PrismaClient({ adapter })
-}
-
-export const prisma = globalForPrisma.prisma ?? createPrismaClient()
+export const prisma = globalForPrisma.prisma ?? new PrismaClient()
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
