@@ -1,7 +1,11 @@
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 import { prisma } from '@/lib/prisma'
 import DashboardClient from '@/components/DashboardClient'
 
 async function getData() {
+  try {
   const [rawTasks, rawLogs] = await Promise.all([
     prisma.task.findMany({
       orderBy: { updatedAt: 'desc' },
@@ -25,6 +29,9 @@ async function getData() {
   }))
 
   return { tasks, logs }
+  } catch {
+    return { tasks: [], logs: [] }
+  }
 }
 
 export default async function Home() {
